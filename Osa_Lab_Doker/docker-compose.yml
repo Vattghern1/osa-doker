@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  app:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    container_name: note_backend
+    ports: 
+      - "127.0.0.1:80:80"
+    depends_on:
+      - db
+    networks:
+      - default
+      - db_internal
+
+  db:
+    image: postgres:latest
+    hostname: 'database_host'
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: osa-lab-db
+    volumes:
+      - postgres_data:/var/docker-db-lab/
+    expose:
+      - "5432"
+    networks:
+      - db_internal
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+  db_internal:
+    internal: true
